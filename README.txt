@@ -19,7 +19,7 @@ Inserting the $context_classes variable into your theme's block.tpl.php.
 -----
 Add this snippet to your theme's block.tpl.php inside the block's class definition:
 
-<?php print $context_block_class; ?>
+<?php print $context_block_classes; ?>
 
 Here's the first line of the Garland theme's block.tpl.php prior to adding the code:
 
