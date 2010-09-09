@@ -1,0 +1,6 @@
+name = Context Block Class 
+description = Define variable block classes per context.
+package = Context 
+core = 6.x
+
+dependencies[] = context
