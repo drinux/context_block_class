@@ -81,7 +81,7 @@ class context_block_class_reaction_block_class extends context_reaction {
         $classes[$v->reactions[$this->plugin][$region]['blocks'][$bid]['class']] = $v->reactions[$this->plugin][$region]['blocks'][$bid]['class'];
       }
     }
-    $vars['context_block_classes'] .= !empty($classes) ? ' '. implode(' ', $classes) : '';
+    $vars['context_block_classes'] = empty($vars['context_block_classes']) ? join(' ', $classes) : $vars['context_block_classes'] . ' ' . join(' ', $classes); 
   } 
 
   /**
