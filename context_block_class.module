@@ -7,7 +7,7 @@ function context_block_class_context_plugins() {
   $plugins = array();
   $plugins['context_block_class_reaction_block_class'] = array(
     'handler' => array(
-      'path'   => drupal_get_path('module', 'context_block_class') .'/plugins',
+      'path'   => drupal_get_path('module', 'context_block_class') . '/plugins',
       'file'   => 'context_block_class_reaction_block_class.inc',
       'class'  => 'context_block_class_reaction_block_class',
       'parent' => 'context_reaction',
