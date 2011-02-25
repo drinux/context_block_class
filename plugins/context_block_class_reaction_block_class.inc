@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Allow additional CSS classes to be defined for blocks per context.
