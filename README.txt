@@ -1,5 +1,5 @@
 =====
-Context Class
+Context Block Class
 http://drupal.org/project/context_block_class
 -----
 Context class is developed and maintained by Advantage Labs <http://advantagelabs.com>.
