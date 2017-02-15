@@ -19,7 +19,7 @@ class context_block_class_reaction_block_class extends context_reaction {
     $regions = system_region_list($theme);
 
     // Get active blocks if this context is setting them.
-    if ($active_blocks = $context->reactions['block']['blocks']) {
+    if (isset($context->reactions['block']['blocks']) && $active_blocks = $context->reactions['block']['blocks']) {
       $region_blocks = array();
 
       // Build a list of blocks by region and weight.
@@ -80,7 +80,7 @@ class context_block_class_reaction_block_class extends context_reaction {
         $classes[$v->reactions[$this->plugin][$region]['blocks'][$bid]['class']] = $v->reactions[$this->plugin][$region]['blocks'][$bid]['class'];
       }
     }
-    $vars['context_block_classes'] = empty($vars['context_block_classes']) ? join(' ', $classes) : $vars['context_block_classes'] . ' ' . join(' ', $classes); 
+    $vars['classes_array'] = array_merge($vars['classes_array'], $classes);
   } 
 
   /**
@@ -109,8 +109,8 @@ class context_block_class_reaction_block_class extends context_reaction {
       }
       if (empty($block_info)) {
         $block_info = array();
-        foreach (module_implements('block') as $module) {
-          $module_blocks = module_invoke($module, 'block', 'list');
+        foreach (module_implements('block_info') as $module) {
+          $module_blocks = module_invoke($module, 'block_info');
           if (!empty($module_blocks)) {
             foreach ($module_blocks as $delta => $block) {
               $block = (object) $block;
@@ -128,12 +128,18 @@ class context_block_class_reaction_block_class extends context_reaction {
       drupal_alter('context_block_info', $block_info);
 
       // Gather only region info from the database.
-      $theme_key = variable_get('theme_default', 'garland');
-      $result = db_query("SELECT module,weight,delta,region,status FROM {blocks} WHERE theme = '%s' ORDER BY weight ASC", $theme_key);
-      while ($row = db_fetch_object($result)) {
-        if ($row->status && isset($block_info["{$row->module}-{$row->delta}"])) {
-          $block_info["{$row->module}-{$row->delta}"]->weight = $row->weight;
-          $block_info["{$row->module}-{$row->delta}"]->region = $row->region;
+      if (module_exists('block')) {
+        $theme_key = variable_get('theme_default', 'garland');
+        $result = db_select('block')
+          ->fields('block', array('module', 'weight', 'delta', 'region', 'title'))
+          ->condition('theme', $theme_key)
+          ->execute();
+        foreach ($result as $row) {
+          if (isset($block_info["{$row->module}-{$row->delta}"])) {
+            $block_info["{$row->module}-{$row->delta}"]->weight = $row->weight;
+            $block_info["{$row->module}-{$row->delta}"]->region = $row->region;
+            $block_info["{$row->module}-{$row->delta}"]->title = $row->title;
+          }
         }
       }
     }
@@ -164,7 +170,7 @@ class context_block_class_reaction_block_class extends context_reaction {
             $context_block = $block_info["{$block['module']}-{$block['delta']}"];
             $context_block->weight = $block['weight'];
             $context_block->region = $block['region'];
-            $context_block->context = $context->name;
+            $context_block->context = !empty($context->name) ? $context->name : 'tempname';
             $blocks[$context_block->bid] = $context_block;
           }
         }
