@@ -25,7 +25,7 @@ class context_block_class_reaction_block_class extends context_reaction {
       // Build a list of blocks by region and weight.
       $all_blocks = $this->get_blocks();
       foreach ($active_blocks as $bid => $block) {
-        $region_blocks[$block['region']][$bid] = $all_blocks[$bid]; 
+        $region_blocks[$block['region']][$bid] = $all_blocks[$bid];
       }
     }
 
@@ -39,7 +39,7 @@ class context_block_class_reaction_block_class extends context_reaction {
         '#title' => t('%region block classes', array('%region' => $region_label)),
         '#description' => t('Additional classes for all blocks in the %region region.',
                              array('%region' => $region_label)),
-        '#type' => 'textfield', 
+        '#type' => 'textfield',
         '#maxlength' => 128,
         '#default_value' => isset($values[$region]['class']) ? $values[$region]['class'] : '',
       );
@@ -57,9 +57,9 @@ class context_block_class_reaction_block_class extends context_reaction {
             '#title' => $block->info,
             '#type' => 'textfield',
             '#default_value' => isset($values[$region]['blocks'][$bid]['class']) ? $values[$region]['blocks'][$bid]['class'] : '',
-          ); 
+          );
         }
-      } 
+      }
     }
     return $form;
   }
@@ -70,7 +70,7 @@ class context_block_class_reaction_block_class extends context_reaction {
     $bid = $vars['block']->bid;
     foreach ($this->get_contexts() as $k => $v) {
 
-      // Apply region-wide classes to this block for the current context. 
+      // Apply region-wide classes to this block for the current context.
       if (!empty($v->reactions[$this->plugin][$region]['class'])) {
         $classes[$v->reactions[$this->plugin][$region]['class']] = $v->reactions[$this->plugin][$region]['class'];
       }
@@ -80,8 +80,8 @@ class context_block_class_reaction_block_class extends context_reaction {
         $classes[$v->reactions[$this->plugin][$region]['blocks'][$bid]['class']] = $v->reactions[$this->plugin][$region]['blocks'][$bid]['class'];
       }
     }
-    $vars['context_block_classes'] = empty($vars['context_block_classes']) ? join(' ', $classes) : $vars['context_block_classes'] . ' ' . join(' ', $classes); 
-  } 
+    $vars['context_block_classes'] = empty($vars['context_block_classes']) ? join(' ', $classes) : $vars['context_block_classes'] . ' ' . join(' ', $classes);
+  }
 
   /**
    * @todo "Borrowed" this method from the context_reaction_block class. Figure out a
@@ -128,9 +128,9 @@ class context_block_class_reaction_block_class extends context_reaction {
       drupal_alter('context_block_info', $block_info);
 
       // Gather only region info from the database.
-      $theme_key = variable_get('theme_default', 'garland');
-      $result = db_query("SELECT module,weight,delta,region,status FROM {blocks} WHERE theme = '%s' ORDER BY weight ASC", $theme_key);
-      while ($row = db_fetch_object($result)) {
+      $theme_key = (array) variable_get('theme_default', 'garland');
+      $result = db_query("SELECT module,weight,delta,region,status FROM {block} WHERE theme = '%s' ORDER BY weight ASC", $theme_key);
+      while ($row = $result->fetch()) {
         if ($row->status && isset($block_info["{$row->module}-{$row->delta}"])) {
           $block_info["{$row->module}-{$row->delta}"]->weight = $row->weight;
           $block_info["{$row->module}-{$row->delta}"]->region = $row->region;
